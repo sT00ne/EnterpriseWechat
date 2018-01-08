@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<div>
+		<input type="hidden" id="uid">
+		<input type="text" id="uname">
+		<input type="text" id="uage">
+		<input type="button" value="添加" onclick="add()">
+		<input type="button" value="修改" onclick="edit()">
+		<input type="button" value="获取" onclick="showname()">
+		<br/>
+		<br/>
+	</div>
+	<div>
+		{volist name="list" id="user"}
+		<span id="uid_{$user.id}">{$user.id}</span>---<span id="uname_{$user.id}">{$user.name}</span>---
+		<span id="uage_{$user.id}">{$user.age}</span>---<span id="ubirthday_{$user.id}">{$user.birthday}</span>
+		<input type="button" id="edit_{$user.id}" value="修改" onclick="show({$user.id})">
+		<input type="button" id="del_{$user.id}" value="删除" onclick="del({$user.id})">
+		<br/>
+		{/volist}
+		{$list->render()}
+	</div>
+	<div>
+		<form action="{:url('index/user/userLogin')}" method="post" id="userForm">
+			<input type="text" name="name" id="submitName">
+			<input type="button" value="submit" id="submitBtn" onclick="login()">
+		</form>
+	</div>
+
+	<script type="text/javascript" src="../public/js/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript">
+	function add() {	
+		var name = $("#uname").val();
+		var age = $("#uage").val();
+		$.ajax({
+			type: "post",
+			url: "add",
+			data: {
+				'name': name,
+				'age':age
+			},
+			success: function(data) {
+				if  (data == "success") {
+					window.location.reload();
+				} else {
+					alert("数据出错！");
+				}
+			},
+		});
+	}
+	function del(id){
+		$.ajax({
+			type: "post",
+			url: "del/"+id,
+			data: {
+			},
+			success: function(data) {
+				if (data == "success") {
+					window.location.reload();
+				} else {
+					alert("数据出错！");
+				}
+			},
+		});
+	}
+	function show(id){
+		$("#uid").val(id);
+		$("#uname").val($("#uname_"+id).html());
+		$("#uage").val($("#uage_"+id).html());
+	}
+	function edit(){
+		var id = $("#uid").val();
+		var name = $("#uname").val();
+		var age = $("#uage").val();
+		$.ajax({
+			type: "post",
+			url: "edit",
+			data: {
+				'id':id,
+				'name': name,
+				'age':age
+			},
+			success: function(data) {
+				if (data == "success") {
+					window.location.reload();
+				} else {
+					alert("数据出错！");
+				}
+			},
+		});
+	}
+	function login(){
+		var name = $("#submitName").val();
+		$.ajax({
+			type: "post",
+			url: "verify",
+			data: {
+				'name': name
+			},
+			success: function(data) {
+				if (data == "success") {
+                    $("#userForm").submit();
+				} else {
+					alert("数据出错！");
+				}
+			},
+		});
+	}
+	function showname() {
+        var name = $("#submitName").val();
+        $.ajax({
+            type: "post",
+            url: "verify",
+            data: {
+                'name': name
+            },
+            success: function(data) {
+                if (data == "success") {
+                    $("#userForm").submit();
+                } else {
+                    alert("数据出错！");
+                }
+            },
+        });
+    }
+	</script>
+</body>
+</html>
