@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+<a href="" onclick="cl()">发送</a>
+<script src="../../public/js/jquery-2.1.4.min.js"></script>
+<script>
+    function cl() {
+        $.ajax({
+            type:"post",
+            url:"Verify",
+            data:'<xml><ToUserName>123</ToUserName><AgentID>456</AgentID><Encrypt>789</Encrypt></xml>',
+            dataType:"json",
+            success:function(data){
+                if(data){
+                    alert("1");
+                }else{
+                    alert("0");
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>
