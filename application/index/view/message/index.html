@@ -6,19 +6,74 @@
 
 </head>
 <body>
-<a href="" onclick="cl()">发送</a>
+
+<br/>
+<br/>
+<br/>
+<span>
+    <select name="department" id="department" onchange="cl()" style="width: 200px;margin: 10px;">
+    {volist name="dep" id="vo"}
+    <option value="{$vo.id}">{$vo.name}</option>
+    {/volist}
+</select>
+</span>
+<br/>
+<br/>
+<div>
+    <select name="user" id="user" style="width: 200px;margin: 10px;">
+        <option value="0">请选择</option>
+    </select>
+</div>
+<div>
+    <input type="text" id="message" style="width: 200px;margin: 10px;">
+</div>
+<div style="width: 200px;margin: 10px;">
+    <button onclick="send()">发送</button>
+    <button onclick="getV()">数据</button>
+</div>
 <script src="../../public/js/jquery-2.1.4.min.js"></script>
 <script>
     function cl() {
         $.ajax({
-            type:"post",
-            url:"Verify",
-            data:'<xml><ToUserName>123</ToUserName><AgentID>456</AgentID><Encrypt>789</Encrypt></xml>',
-            dataType:"json",
-            success:function(data){
-                if(data){
+            type: "post",
+            url: "getUser",
+            data: {"department": $("#department").val()},
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    $("#user").empty();
+                    $("#user").append($("<option></option>")
+                        .attr("value", 0)
+                        .text("全部"));
+                    $.each(JSON.parse(data), function (index, value) {
+                        console.log(value.userid);
+                        $("#user").append($("<option></option>")
+                            .attr("value", value.userid)
+                            .text(value.name));
+                    });
+                } else {
+                    alert("0");
+                }
+            }
+        });
+    }
+    function getV() {
+        console.info($("#department").val() + "|" + $("#user").val() + "|" + $("#message").val());
+    }
+    function send() {
+        $.ajax({
+            type: "post",
+            url: "sendMessage",
+            data: {
+                "department": $("#department").val(),
+                "userId": $("#user").val(),
+                "message": $("#message").val()
+            },
+            dataType: "text",
+            success: function (data) {
+                if (data) {
                     alert("1");
-                }else{
+                } else {
                     alert("0");
                 }
             }
